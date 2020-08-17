@@ -24,4 +24,12 @@ public interface MemberService {
 	 * @throws Exception
 	 */
 	Member login(Member member) throws Exception; // 추상 메소드
+
+	/**
+	 * @param signUpMember
+	 * @return
+	 * @throws Exception
+	 */
+	int signUp(Member signUpMember) throws Exception;
+	
 }

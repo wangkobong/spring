@@ -23,7 +23,7 @@
 		Handler Mapping 관련 설정이 xml 파일에 없는 이유 
 	
 		- Handler Mapping 관련 설정내용을 xml 형식으로 작성할 수 있지만
-		  이를 대체할 수 있는 쉬운 어노테이션이 있기 때문에 작성되어 있지 않음.
+		  이를 대체할 수 있는 쉬운 어노테  이션이 있기 때문에 작성되어 있지 않음.
 		 ** @Controller, @RequestMapping 두 어노테이션이 Handler Mapping 설정을 대체 
 		 
 	 -->

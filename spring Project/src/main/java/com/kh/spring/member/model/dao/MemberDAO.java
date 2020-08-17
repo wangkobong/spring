@@ -25,6 +25,16 @@ public class MemberDAO {
 		// id가 loginMember인 태그를 수행하는데 
 		// 수행 시 필요한 파라미터로 member를 전달
 	}
+
+
+	/** 회원 가입 DAO
+	 * @param signUpMember
+	 * @return result
+	 */
+	public int signUp(Member signUpMember) throws Exception {
+		
+		return sqlSession.insert("memberMapper.signUp", signUpMember);
+	}
 	
 	
 }

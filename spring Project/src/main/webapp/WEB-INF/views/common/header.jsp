@@ -41,8 +41,22 @@
 	  background-color: #fff;
 	}
    	</style>
+   	   <!-- sweetalert : alert창을 꾸밀 수 있게 해주는 라이브러리 https://sweetalert.js.org/ -->
+     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <body id="page-top">
+
+	<c:if test="${!empty msg}">
+		<script>
+			swal({icon : "${status}",
+				  title : "${msg}",
+				  text : "${text}"});
+						
+
+		</script>
+		<c:remove var="msg"/>
+	</c:if>
+	
 	<!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
         <a class="navbar-brand js-scroll-trigger" href="#page-top">

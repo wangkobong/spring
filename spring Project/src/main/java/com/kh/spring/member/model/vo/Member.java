@@ -10,7 +10,7 @@ public class Member {
 	private String memberPhone;
 	private String memberEmail;
 	private String memberAddress;
-	private String memberIntrest;
+	private String memberInterest;
 	private Date memberEnrolDate;
 	private String memberStatus;
 	private String memberGrade;
@@ -20,7 +20,7 @@ public class Member {
 	}
 
 	public Member(int memberNo, String memberId, String memberPwd, String memberName, String memberPhone,
-			String memberEmail, String memberAddress, String memberIntrest, Date memberEnrolDate, String memberStatus,
+			String memberEmail, String memberAddress, String memberInterest, Date memberEnrolDate, String memberStatus,
 			String memberGrade) {
 		super();
 		this.memberNo = memberNo;
@@ -30,7 +30,7 @@ public class Member {
 		this.memberPhone = memberPhone;
 		this.memberEmail = memberEmail;
 		this.memberAddress = memberAddress;
-		this.memberIntrest = memberIntrest;
+		this.memberInterest = memberInterest;
 		this.memberEnrolDate = memberEnrolDate;
 		this.memberStatus = memberStatus;
 		this.memberGrade = memberGrade;
@@ -92,12 +92,12 @@ public class Member {
 		this.memberAddress = memberAddress;
 	}
 
-	public String getMemberIntrest() {
-		return memberIntrest;
+	public String getMemberInterest() {
+		return memberInterest;
 	}
 
-	public void setMemberIntrest(String memberIntrest) {
-		this.memberIntrest = memberIntrest;
+	public void setMemberInterest(String memberInterest) {
+		this.memberInterest = memberInterest;
 	}
 
 	public Date getMemberEnrolDate() {
@@ -128,9 +128,10 @@ public class Member {
 	public String toString() {
 		return "Member [memberNo=" + memberNo + ", memberId=" + memberId + ", memberPwd=" + memberPwd + ", memberName="
 				+ memberName + ", memberPhone=" + memberPhone + ", memberEmail=" + memberEmail + ", memberAddress="
-				+ memberAddress + ", memberIntrest=" + memberIntrest + ", memberEnrolDate=" + memberEnrolDate
+				+ memberAddress + ", memberInterest=" + memberInterest + ", memberEnrolDate=" + memberEnrolDate
 				+ ", memberStatus=" + memberStatus + ", memberGrade=" + memberGrade + "]";
 	}
+
 	
 	
 	
