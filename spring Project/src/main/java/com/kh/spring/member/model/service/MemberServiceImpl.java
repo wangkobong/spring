@@ -104,9 +104,8 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int updateMember(Member upMember) {
 		
-		int result = memberDAO.updateMember(upMember);
-		
-		return result;
+		return memberDAO.updateMember(upMember);
+	
 	}
 	
 	
