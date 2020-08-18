@@ -253,9 +253,7 @@
 
 			// 아이디 유효성 검사
 			$id.on("input", function(){
-				
-				signUpCheck.id = false;
-				
+			
 				// 영어 대/소문자 + 숫자 총 6~12
 				var regExp = /^[A-Za-z0-9]{6,12}$/;
 				
@@ -263,9 +261,30 @@
 					$("#checkId").text("아이디 형식이 유효하지 않습니다.").css("color", "red");
 					signUpCheck.id = false;
 				}else{
-					$("#checkId").text("유효한 아이디 형식입니다..").css("color", "green");
-					signUpCheck.id = true;
 					// 비동기로 아이디 중복검사 (ajax)
+					
+					$.ajax({
+						url : "idDupCheck",
+						data : {"memberId" : $id.val()},
+						type : "GET",
+						success : function(result){
+							
+							if(result == 0){
+								$("#checkId").text("사용 가능한 아이디입니다.").css("color", "green");
+								signUpCheck.id = true;								
+							}else{
+								$("#checkId").text("이미 사용중인 아이디 입니다.").css("color", "red");
+								signUpCheck.id = false;
+							}
+							
+						}, error : function(){
+							console.log("아이디 중복검사 실패");
+						}
+						
+						
+					});
+					
+					
 				}
 			});
 			

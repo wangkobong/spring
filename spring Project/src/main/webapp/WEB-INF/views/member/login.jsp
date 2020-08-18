@@ -44,8 +44,8 @@
 		<form action="loginAction" method="post" class="form-signin">
 	
 			<div class="form-label-group">
-				<input type="text" id="memberId" name="memberId" class="form-control" placeholder="ID" required autofocus> 
-				<label for="memberId">ID</label>
+				<input type="text" id="memberId" name="memberId" class="form-control" placeholder="ID" required autofocus value="${cookie.saveId.value}"> 
+				<label for="memberId">ID</label>																		<!-- 쿠키 중 save Id 라는 키를 가지는 쿠키의 value를 꺼내 출력-->
 			</div>
 	
 			<div class="form-label-group">
@@ -55,7 +55,12 @@
 	
 			<div class="checkbox mb-3">
 				<label> 
-					<input type="checkbox" name="saveId"> 아이디 저장
+					<input type="checkbox" name="saveId"
+						<c:if test="${!empty cookie.saveId.value}">
+							checked
+						</c:if>
+					
+					> 아이디 저장
 				</label>
 			</div>
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>

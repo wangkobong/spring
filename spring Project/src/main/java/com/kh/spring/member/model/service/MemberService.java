@@ -23,13 +23,27 @@ public interface MemberService {
 	 * @return loginMember
 	 * @throws Exception
 	 */
-	Member login(Member member) throws Exception; // 추상 메소드
+	Member login(Member member); // 추상 메소드
 
 	/**
 	 * @param signUpMember
 	 * @return
 	 * @throws Exception
 	 */
-	int signUp(Member signUpMember) throws Exception;
+	int signUp(Member signUpMember);
+
+	
+	
+	/** 아이디 중복 검사 Service
+	 * @param memberId
+	 * @return
+	 */
+	int idDupCheck(String memberId);
+
+	/** 개인정보 수정 Service
+	 * @param upMember
+	 * @return
+	 */
+	int updateMember(Member upMember);
 	
 }

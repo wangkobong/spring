@@ -54,6 +54,26 @@
   		#{memberPhone}, #{memberEmail}, #{memberAddress}, #{memberInterest},
   		DEFAULT, DEFAULT, DEFAULT)
   	</insert> 
+  	
+  	<!-- ID 중복 검사  -->
+  	<!-- parameter/resultType 작성 시  마이바티스 내장 별칭을 잘 확인할 것
+  		String -> string
+  		int -> _int
+  		List -> list , Map -> map
+  	 -->
+  	<select id="idDupCheck" parameterType="string" resultType="_int">
+  		SELECT COUNT(*) FROM MEMBER
+  		WHERE MEMBER_ID = #{memberId}
+  		AND MEMBER_STATUS = 'Y'
+  	
+  	</select>
+
+  	<update id="updateMember" parameterType="Member" >
+	  	UPDATE MEMBER SET 
+	  	MEMBER_PHONE = #{memberPhone} , MEMBER_EMAIL = #{memberEmail}, 
+	  	MEMBER_ADDR = #{memberAddress} , MEMBER_INTEREST = #{memberInterest}
+	  	WHERE MEMBER_ID = #{memberId}
+  	</update>
 </mapper>
 
 

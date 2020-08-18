@@ -19,7 +19,7 @@ public class MemberServiceImpl implements MemberService{
 	@Autowired // bcrypt 암호와 객체 의존성 주입(DI);
 	private BCryptPasswordEncoder bcPwd;
 	@Override
-	public Member login(Member member) throws Exception {
+	public Member login(Member member) {
 		
 		// bcrypt 방식으로 암호화를 진행한 경우
 		// BCryptPasswordEncoder에서 제공하는 matches()라는 메소드를 이용해서
@@ -28,13 +28,17 @@ public class MemberServiceImpl implements MemberService{
 		
 		Member loginMember = memberDAO.login(member);
 		
-		if(!bcPwd.matches(member.getMemberPwd(), loginMember.getMemberPwd())) {
+		if(loginMember != null) {
 			
-			// 입력한 비밀번호가 DB에 저장된 값과 같지 않을 경우
-			loginMember = null;
-		}else {
-			// 비교가 끝난 조회된 비밀번호 삭제
-			loginMember.setMemberPwd(null);
+			if(!bcPwd.matches(member.getMemberPwd(), loginMember.getMemberPwd())) {
+				
+				// 입력한 비밀번호가 DB에 저장된 값과 같지 않을 경우
+				loginMember = null;
+			}else {
+				// 비교가 끝난 조회된 비밀번호 삭제
+				loginMember.setMemberPwd(null);
+			}
+			
 		}
 		
 		return loginMember;
@@ -59,7 +63,7 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public int signUp(Member signUpMember) throws Exception{
+	public int signUp(Member signUpMember) {
 		
 		/* 1. 비밀번호를 평문으로 저장하면 안되나?
 		 * 	-> 비밀번호 평문 저장은 범죄 행위
@@ -85,6 +89,23 @@ public class MemberServiceImpl implements MemberService{
 		signUpMember.setMemberPwd(encPwd);
 		
 		int result = memberDAO.signUp(signUpMember);
+		return result;
+	}
+
+	// ID 중복 검사 Service 구현
+	@Override
+	public int idDupCheck(String memberId) {
+		
+		return memberDAO.idDupCheck(memberId);
+	}
+	
+	// 회원정보 수정 Service 구현
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public int updateMember(Member upMember) {
+		
+		int result = memberDAO.updateMember(upMember);
+		
 		return result;
 	}
 	

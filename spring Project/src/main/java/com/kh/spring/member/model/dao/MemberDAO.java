@@ -18,7 +18,7 @@ public class MemberDAO {
 	 * @return loginMember
 	 * @throws Exception
 	 */
-	public Member login(Member member) throws Exception{
+	public Member login(Member member) {
 
 		return sqlSession.selectOne("memberMapper.loginMember", member);
 		// memberMapper라는 namespace를 갖는 mapper파일에
@@ -31,9 +31,29 @@ public class MemberDAO {
 	 * @param signUpMember
 	 * @return result
 	 */
-	public int signUp(Member signUpMember) throws Exception {
+	public int signUp(Member signUpMember)  {
 		
 		return sqlSession.insert("memberMapper.signUp", signUpMember);
+	}
+
+
+	/** ID 중복 검사 DAO
+	 * @param memberId
+	 * @return result
+	 */
+	public int idDupCheck(String memberId) {
+
+		return sqlSession.selectOne("memberMapper.idDupCheck", memberId);
+	}
+
+
+	/** 개인정보 수정 DAO
+	 * @param upMember
+	 * @return
+	 */
+	public int updateMember(Member upMember) {
+		
+		return sqlSession.update("memberMapper.updateMember", upMember);
 	}
 	
 	
