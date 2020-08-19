@@ -23,7 +23,7 @@
             <h2>회원 가입</h2>
         </div>
 
-        <div class="row">
+        <div class="row"> 
             <div class="col-md-6 offset-md-3">
 
                 <form method="POST" action="signUpAction" class="needs-validation" name="signUpForm" onsubmit="return validate();">
@@ -262,6 +262,21 @@
 					signUpCheck.id = false;
 				}else{
 					// 비동기로 아이디 중복검사 (ajax)
+					
+					$.ajax({
+						url : "idDupCheck",
+						data : {"memberId" : $id.val()},
+						type : "GET",
+						success : function(){
+							
+							
+						},error : function(){
+							console.log("아이디 중복검사 실패")
+							
+						}
+						
+						
+					});
 					
 					$.ajax({
 						url : "idDupCheck",

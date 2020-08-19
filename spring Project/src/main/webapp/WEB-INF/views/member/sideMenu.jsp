@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <style>
-	.footer{
+/* 	.footer{
 		position: absolute;
 	    bottom: 0;
-	}
+	} */
 </style> 
    
 <div class="col-sm-3 mt-5">
