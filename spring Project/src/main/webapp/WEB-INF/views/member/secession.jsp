@@ -7,9 +7,9 @@
 <title>내정보</title>
 </head>
 <style>
-#content-main {
-	height: 770px;
-}
+	#content-main {
+		height: 770px;
+	}
 </style>
 <body>
 	<jsp:include page="../common/header.jsp"/>

@@ -20,11 +20,13 @@
 	 -->
 	<typeAliases>
 		<typeAlias type="com.kh.spring.member.model.vo.Member" alias="Member"/>
+		<typeAlias type="com.kh.spring.board.model.vo.Board" alias="Board"/>
 	</typeAliases>
 	
 	<!-- mapper.xml 파일을 등록하는 태그 -->
 	<mappers>
 		<mapper resource="/mappers/member-mapper.xml"/>
+		<mapper resource="/mappers/board-mapper.xml"/>		
 	</mappers>
 	
 </configuration>

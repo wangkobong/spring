@@ -45,6 +45,10 @@
 	 h1, h2, h3, h4, h5, h6 {
 	     text-transform: initial;
 	   }
+	   
+	 main, #cotent-main{
+	 	min-height : 100%;
+	 }
 	      
       </style>
 	
@@ -88,6 +92,8 @@
             		
             		</c:otherwise>
             	</c:choose>
+            	
+            	<li class="nav-item"><a class="nav-link" href="${contextPath}/board/list/1">Free Board</a></li>
             </ul>
         </div>
     </nav>
