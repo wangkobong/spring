@@ -16,6 +16,15 @@
         <result property="boardName" column="BOARD_NM"/>
     </resultMap>
     
+    <resultMap type="Attachment" id="attachmentResultSet">
+    	<id property="fileNo" column="FILE_NO"></id>
+    	<result property="parentBoardNo" column="PARENT_BOARD_NO"/>
+    	<result property="fileOriginName" column="FILE_ORIGIN_NAME"/>
+    	<result property="fileChangeName" column="FILE_CHANGE_NAME"/>
+    	<result property="filePath" column="FILE_PATH"/>
+    	<result property="fileLevel" column="FILE_LEVEL"/>
+    </resultMap>
+    
 	<!-- 전체 게시글 수 조회 -->
 	<select id="getListCount" parameterType="_int" resultType="_int">
 		SELECT COUNT(*) FROM V_BOARD
@@ -72,4 +81,25 @@
 		BOARD_MODIFY_DT = SYSDATE
 		WHERE BOARD_NO = #{boardNo}	
 	</update>
+	
+	<!-- 파일 정보 삽입 -->
+	<insert id="insertAttachment" parameterType="Attachment">
+		INSERT INTO ATTACHMENT VALUES(
+			SEQ_FNO.NEXTVAL, #{parentBoardNo},
+			#{fileOriginName}, #{fileChangeName}, #{filePath}, #{fileLevel}
+			)
+	</insert>
+	
+	<!-- 게시글 이미지 조회 -->
+	<select id="selectFiles" parameterType="_int" resultMap="attachmentResultSet">
+		SELECT * FROM ATTACHMENT
+		WHERE PARENT_BOARD_NO = #{boardNo}
+		ORDER BY FILE_LEVEL
+	</select>
+	
+	<!-- 파일 정보 삭제  -->
+	<delete id="deleteAttachment" parameterType="_int">
+		DELETE FROM ATTACHMENT
+		WHERE PARENT_BOARD_NO = #{boardNo}
+	</delete>
 </mapper>

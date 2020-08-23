@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import com.kh.spring.board.model.vo.Attachment;
 import com.kh.spring.board.model.vo.Board;
 import com.kh.spring.board.model.vo.PageInfo;
 
@@ -87,6 +88,32 @@ public class BoardDAO {
 	public int updateBoard(Board upBoard) {
 
 		return sqlSession.update("boardMapper.updateBoard", upBoard);
+	}
+	
+	
+	/** 파일 정보 삽입 DAO
+	 * @param at
+	 * @return result
+	 */
+	public int insertAttachment(Attachment at) {
+
+		return sqlSession.insert("boardMapper.insertAttachment", at);
+	}
+
+	/** 게시글 이미지 조회 DAO
+	 * @param boardNo
+	 * @return result
+	 */
+	public List<Attachment> selectFiles(int boardNo) {
+		
+		return sqlSession.selectList("boardMapper.selectFiles", boardNo);
+	}
+
+	/** 파일 저장 오류 시 DB에 저장된 내용 삭제 DAO
+	 * @param boardNo
+	 */
+	public void deleteAttachment(int boardNo) {
+		sqlSession.delete("boardMapper.deletAttachment", boardNo);	
 	}
 
 }

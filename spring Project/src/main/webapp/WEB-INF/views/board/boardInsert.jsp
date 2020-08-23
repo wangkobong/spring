@@ -23,8 +23,14 @@
 
 			<h3>게시글 등록</h3>
 			<hr>
-			<form action="insertAction" method="post" role="form" onsubmit="return validate();">
-
+			<!-- enctype : form태그 데이터가 서버에 제출 될 때 인코딩 방법을 지정하는 속성 
+				(기본값 : application/x-www-form-urlencoded : 데이터를 서버에 전송하기 전에 문자로 인코딩)
+				multipart/form-data : 모든 데이터를 인코딩 하지 않음(원본 데이터 상태(바이트) -> 파일을 서버에 전달 가능)
+			
+			-->
+			<form action="insertAction" method="post" role="form" 
+				enctype="multipart/form-data"	onsubmit="return validate();">
+			
 				<div class="mb-2">
 					<label class="input-group-addon mr-3 insert-label">카테고리</label> 
 					<select	class="custom-select" id="category" name="boardCategory" style="width: 150px;">

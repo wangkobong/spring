@@ -76,7 +76,30 @@
 
 				
 				<!-- 이미지 부분 -->
-				
+				<c:if test="${!empty files}">
+
+                    <div class="carousel slide m-3" id="carousel-325626">
+
+                        <div class="carousel-inner boardImgArea">
+
+
+                            <c:forEach var="at" items="${files}" varStatus="vs">
+                                <c:set var="src" value="${contextPath}${at.filePath}/${at.fileChangeName}"/>
+
+                                <div class="carousel-item <c:if test="${vs.index == 0}"> active</c:if>">
+                                    <img class="d-block w-100 boardImg" src="${src}" />
+                                    <input type="hidden" value="${at.fileNo}">
+                                </div>
+                            </c:forEach>
+
+                        </div> 
+
+
+                        <a class="carousel-control-prev" href="#carousel-325626" data-slide="prev"><span class="carousel-control-prev-icon"></span> <span class="sr-only">Previous</span></a> <a class="carousel-control-next" href="#carousel-325626" data-slide="next">
+                        <span class="carousel-control-next-icon"></span> 
+                        <span class="sr-only">Next</span></a>
+                    </div>
+                </c:if>
 
 
 				<!-- Content -->

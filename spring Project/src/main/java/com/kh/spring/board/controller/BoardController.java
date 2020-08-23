@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.spring.board.model.service.BoardService;
+import com.kh.spring.board.model.vo.Attachment;
 import com.kh.spring.board.model.vo.Board;
 import com.kh.spring.board.model.vo.PageInfo;
 import com.kh.spring.member.model.vo.Member;
@@ -70,6 +72,14 @@ public class BoardController {
 
 		String url = null;
 		if(board != null) { // 게시글 조회 성공 시
+			
+			// DB에서 해당 글에 작성된 이미지파일 모두 조회하기
+			List<Attachment> files = boardService.selectFiles(boardNo);
+			
+			if(!files.isEmpty()) {
+				model.addAttribute("files", files);
+			}
+			
 			model.addAttribute("board", board);
 			url = "board/boardView";
 				
@@ -91,10 +101,12 @@ public class BoardController {
 	
 	// 게시글 등록
 	@RequestMapping(value="{type}/insertAction", method=RequestMethod.POST)
-	public String insertAction(@PathVariable int type, Board board, Model model, RedirectAttributes rdAttr) {
-											
-		// 게시글 등록에 필요한 내용
-		
+	public String insertAction(@PathVariable int type, Board board, Model model, RedirectAttributes rdAttr,
+								@RequestParam(value="thumbnail", required=false) MultipartFile thumbnail,
+								@RequestParam(value="images", required=false)List<MultipartFile> images,
+								HttpServletRequest request) {
+											// 업로드 되는 이미지 파일이 필수 파라미터가 아니게 설정
+		// 게시글 등록에 필요한 내용		
 		// 카테고리, 제목, 내용, 게시판 타입, 작성자(회원번호)
 		
 		// Session에서 회원 정보 얻어오기 (@SessionAttributes 확인)
@@ -104,8 +116,23 @@ public class BoardController {
 		board.setBoardType(type);
 		board.setBoardWriter(loginMember.getMemberNo()+ "");
 		
+		// 파일 업로드, 게시글 입력값 확인
+		System.out.println("썸네일 : " + thumbnail.getOriginalFilename());
+		for(int i=0 ; i<images.size() ; i++) {
+			System.out.println("images[" + i + "] : " + images.get(i).getOriginalFilename());
+		}
+		
+		
+		// 파일을 저장할 서버 컴퓨터의 로컬 경로
+		String savePath = request.getSession().getServletContext().getRealPath("resources/uploadImages");
+		
+		// 썸네일 이미지 정보를 images 리스트 제일 앞에 추가 
+		images.add(0, thumbnail);
+		
 		// 게시글 작성 Service 호출
-		int result = boardService.insertBoard(board);
+		int result = boardService.insertBoard(board, images, savePath);
+		
+		
 		
 		String status = null;
 		String msg = null;
@@ -121,8 +148,8 @@ public class BoardController {
 			
 		}
 		
-		rdAttr.addFlashAttribute("status", "status");
-		rdAttr.addFlashAttribute("msg", "msg");
+		rdAttr.addFlashAttribute("status", status);
+		rdAttr.addFlashAttribute("msg", msg);
 		
 		return "redirect:" + url;
 	}
