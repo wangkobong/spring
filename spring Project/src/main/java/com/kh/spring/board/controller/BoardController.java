@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.spring.board.model.service.BoardService;
@@ -125,6 +126,101 @@ public class BoardController {
 		
 		return "redirect:" + url;
 	}
+	// 게시글 삭제
+	// spring/board/1/515/delete
+	@RequestMapping("{type}/{boardNo}/delete")
+	public String deleteBoard(@PathVariable int type,
+							  @PathVariable int boardNo, RedirectAttributes rdAttr, HttpServletRequest request) {
+		
+		
+		int result = boardService.deleteBoard(boardNo);
+		
+		String status = null;
+		String msg = null;
+		String url = null;
+		
+		if(result > 0) {
+			status = "success";
+			msg = "게시물 삭제 성공!";
+			// redirect 시 제일 앞 "/" 기호는 contextPath를 의미함.
+			url = "/board/list/" + type;
+		}else {
+			status = "error";
+			msg = "게시물 삭제 실패!";
+			url = request.getHeader("referer");
+			
+		}
+	
+	rdAttr.addFlashAttribute("status", status);
+	rdAttr.addFlashAttribute("msg", msg);
+	
+	return "redirect:" + url;
+	}
+	
+	/* ModelAndView
+	 * 
+	 * Model : 응답페이지에 값을 전달할 때 Map 형태로 저장하여 전달하는 객체
+	 * View : 이동할 페이지 정보를 담는 객체 (View라는 객체가 별도로 존재하지는 않음)
+	 * 
+	 * 단순히 응답페이지에 데이터 전달, viewName 설정 시 사용하는 객체
+	 */
+	
+	// 게시글 수정
+	@RequestMapping("{type}/{boardNo}/update")
+	public ModelAndView updateView(@PathVariable int boardNo,ModelAndView mv) {
+		
+		// 기존 게시글 정보를 얻어와 update 화면에 출력해 이전 작성 내용을 보여주어야 함.
+		
+		Board board = boardService.selectBoard(boardNo);
+		
+		mv.addObject("board", board);
+		mv.setViewName("board/boardUpdate");
+		
+		return mv;
+	}
+	
+	// 게시글 수정
+	@RequestMapping("{type}/{boardNo}/updateAction")
+	public ModelAndView updateAction(@PathVariable int type,
+									 @PathVariable int boardNo,
+									 ModelAndView mv,
+									 Board upBoard, int cp,
+									 RedirectAttributes rdAttr,
+									 HttpServletRequest request) {
+		upBoard.setBoardNo(boardNo);
+		
+		int result = boardService.updateBoard(upBoard);
+		
+		String status = null;
+		String msg = null;
+		String url = null;
+		
+		if(result > 0) {
+			status = "success";
+			msg = "게시글 수정 성공";
+			// 수정 성공 시 상세조회 화면으로
+			// 현재 : {type}/{boardNo}/updateAction
+			// 상세 : {type}/{boardNo}?cp=1
+			url = "../"  +boardNo + "?cp=" + cp;
+			
+		}else {
+			// 실패 시 이전 요청주소(수정화면)
+			status = "error";
+			msg = "게시글 수정 실패";
+			url = request.getHeader("referer");
+		}
+		
+		mv.setViewName("redirect:"+url);
+		
+		rdAttr.addFlashAttribute("status", status);
+		rdAttr.addFlashAttribute("msg", msg);
+		
+		return mv;
+	}
+	
+	
+	
+	
 }
 
 

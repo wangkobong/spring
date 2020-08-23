@@ -78,4 +78,15 @@ public class BoardDAO {
 		return sqlSession.update("boardMapper.insertBoard", board);
 	}
 
+	public int deleteBoard(int boardNo) {
+
+		return sqlSession.update("boardMapper.deleteBoard", boardNo);
+	}
+	
+	// 게시글 삭제 DAO
+	public int updateBoard(Board upBoard) {
+
+		return sqlSession.update("boardMapper.updateBoard", upBoard);
+	}
+
 }

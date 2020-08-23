@@ -87,6 +87,37 @@ public class BoardServiceImpl implements BoardService{
 		return result;
 	}
 	
+	
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public int deleteBoard(int boardNo) {
+		
+		return boardDAO.deleteBoard(boardNo);
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public int updateBoard(Board upBoard) {
+		// 크로스 사이트 스크립트 방지 처리
+		upBoard.setBoardContent(replaceParameter(upBoard.getBoardContent()));
+		int result = boardDAO.updateBoard(upBoard);
+		
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// 크로스 사이트 스크립트 방지 메소드
     private String replaceParameter(String param) {
         String result = param;
@@ -99,6 +130,8 @@ public class BoardServiceImpl implements BoardService{
 
         return result;
     }
+
+
 	
 }
 

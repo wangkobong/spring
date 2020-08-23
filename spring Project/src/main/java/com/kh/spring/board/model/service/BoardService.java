@@ -34,6 +34,19 @@ public interface BoardService {
 	 * @return result
 	 */
 	int insertBoard(Board board);
+
+	/** 게시글 삭제 Service
+	 * @param boardNo
+	 * @return
+	 */
+	int deleteBoard(int boardNo);
+
+	
+	/** 게시글 수정 Service
+	 * @param upBoard
+	 * @return
+	 */
+	int updateBoard(Board upBoard);
 	
 	
 }

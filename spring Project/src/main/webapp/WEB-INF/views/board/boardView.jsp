@@ -101,8 +101,14 @@
 	                	<!-- 글 작성자와 로그인한 회원이 같을 경우 -->
 	                	
 	                	<c:if test="${board.boardWriter == loginMember.memberId}">
-							<a href="" class="btn btn-primary ml-1 mr-1">수정</a>
-							<a href="" class="btn btn-primary">삭제</a> 
+	                		<c:url var="updateUrl" value="${board.boardNo}/update">
+	                			<c:param name="cp" value="${param.cp}"/>
+	                		</c:url>
+	                		
+	                		
+	                		
+							<a href="${updateUrl}" class="btn btn-primary ml-1 mr-1">수정</a>
+							<button id="deleteBtn" class="btn btn-primary">삭제</button> 
 						</c:if>
 					</div>
 				</div>
@@ -110,12 +116,20 @@
 
 			<hr>
 
-
+	
 		</div>
 	</div>
 	<jsp:include page="../common/footer.jsp"/>
 	
+	
 	<script>	
+		$("#deleteBtn").on("click",function(){
+			if(confirm("정말 삭제하시겠습니까?")){
+				// spring/board/1/515/delete
+				location.href="${board.boardNo}/delete";
+			}
+				
+		});
 		
 		
 	</script>
