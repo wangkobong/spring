@@ -1,5 +1,6 @@
 package com.kh.spring.board.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +53,20 @@ public class BoardController {
 		/*
 		 * for(Board b : boardList) { System.out.println(b); }
 		 */
+		
+		// 4) 썸네일 목록 조회
+		if(!boardList.isEmpty()) { // 게시글 목록 조회 결과가 있을 경우
+			// 마이바티스 List 조회 시 조회 결과가 없어도 비어 있는 List[] 가 반환이 됨.
+			List<Attachment> thList = boardService.selectThumbnailList(boardList);
+			/*
+			 * for(Attachment at : thList) { System.out.println(at); }
+			 */
+			
+			// 썸네일 목록을 응답페이지에 전달
+			model.addAttribute("thList", thList);
+			
+		}
+		
 		
 		model.addAttribute("boardList", boardList);
 		model.addAttribute("pInfo", pInfo);
@@ -200,6 +215,14 @@ public class BoardController {
 		
 		Board board = boardService.selectBoard(boardNo);
 		
+		// -------------------------------------------------------
+		// 기존 게시글 이미지 조회 및 전달
+		if(board != null) {
+			List<Attachment> files = boardService.selectFiles(boardNo);
+			mv.addObject("files", files);
+		}
+		
+		// -------------------------------------------------------
 		mv.addObject("board", board);
 		mv.setViewName("board/boardUpdate");
 		
@@ -211,12 +234,35 @@ public class BoardController {
 	public ModelAndView updateAction(@PathVariable int type,
 									 @PathVariable int boardNo,
 									 ModelAndView mv,
-									 Board upBoard, int cp,
+									 Board upBoard, int cp, boolean[] deleteImages,
 									 RedirectAttributes rdAttr,
-									 HttpServletRequest request) {
+									 HttpServletRequest request,
+									 @RequestParam(value="thumbnail" ,required=false)MultipartFile thumbnail,
+										@RequestParam(value="images" ,required=false) List<MultipartFile> images) {
+						
+		System.out.println("deleteImages : " + Arrays.toString(deleteImages));
+		
 		upBoard.setBoardNo(boardNo);
 		
-		int result = boardService.updateBoard(upBoard);
+		
+		// 이미지 수정
+		// --------------------------------------------------------------
+		// 업로드된 파일 이름 확인
+		//  -> 파일 이름이 출력딘 경우 == 이미지가 수정된 경우
+		System.out.println("thumbnail : " + thumbnail.getOriginalFilename());
+		for(int i=0; i<images.size() ; i++) {
+			System.out.println("images[" + i + "] :" + images.get(i).getOriginalFilename());
+		}
+		
+		// 썸네일 이미지를 images리스트 0번 인덱스에 추가
+		images.add(0, thumbnail);
+		
+		// 파일 저장 경로 설정
+		String savePath = request.getSession().getServletContext().getRealPath("resources/uploadImages");
+		
+		int result = boardService.updateBoard(upBoard, savePath, images, deleteImages);
+		// --------------------------------------------------------------
+		// int result = boardService.updateBoard(upBoard);
 		
 		String status = null;
 		String msg = null;

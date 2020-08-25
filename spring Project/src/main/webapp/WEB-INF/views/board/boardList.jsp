@@ -38,7 +38,7 @@
 	
 		<h1>${boardList[0].boardName}</h1>
 	
-        <div style="height:530px">
+        <div style="height:650px">
             <table class="table table-hover table-striped" id="list-table">
                 <thead>
                     <tr>
@@ -65,7 +65,19 @@
 	                			<tr>
 	                				<td>${board.boardNo}</td>
 	                				<td>${board.boardCategory}</td>
-	                				<td class="boardTitle">${board.boardTitle}</td>
+	                				<td class="boardTitle">
+	                					<c:forEach items="${thList}" var="th"> 
+	                						<c:if test="${th.parentBoardNo == board.boardNo}">
+	                						<%-- 현재 출력중인 게시글 목록 번호와 일치하는 썸네일 목록이 있을 경우 --%>
+	                							<c:set var="src" value="${contextPath}${th.filePath}/${th.fileChangeName}"/>
+	                							<img src="${src}">
+	                						</c:if>
+	                					</c:forEach>
+	                					
+	                					
+	                				
+	                					${board.boardTitle}	
+	                				</td>
 	                				<td>${board.boardWriter}</td>
 	                				<td>${board.readCount}</td>
 	                				<td>

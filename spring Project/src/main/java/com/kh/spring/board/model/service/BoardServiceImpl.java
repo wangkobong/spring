@@ -149,10 +149,111 @@ public class BoardServiceImpl implements BoardService{
 	
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public int updateBoard(Board upBoard) {
+	public int updateBoard(Board upBoard, String savePath, List<MultipartFile> images, boolean[] deleteImages) {
+		// images : 수정된 파일 리스트
+		
 		// 크로스 사이트 스크립트 방지 처리
 		upBoard.setBoardContent(replaceParameter(upBoard.getBoardContent()));
-		int result = boardDAO.updateBoard(upBoard);
+		int result = boardDAO.updateBoard(upBoard); // 게시글 수정
+		
+		if(result > 0) {
+			// 1) 이전 업로드 파일 목록 조회
+			List<Attachment> oldFiles = boardDAO.selectFiles(upBoard.getBoardNo());
+			
+			// DB에 저장할 웹상에서의 이미지 접근 경로
+			String filePath = "/resources/uploadImages";
+			
+			List<Attachment> files = new ArrayList<Attachment>(); // 파일 정보를 모아 놓은 List
+			List<Attachment> removeFiles = new ArrayList<Attachment>(); // 서버 측 파일 제거 List
+			Attachment at = null;
+			for(int i=0; i<images.size(); i++) {
+				
+				if(!images.get(i).getOriginalFilename().equals("")) {
+					// 현재 접근중인 images 요소에 실제 파일명이 빈 문자열이 아닐 경우
+					// == 수정된 이미지가 업로드 된 경우
+					
+					// 파일명 변경(rename 작업)
+					String changeFileName = rename(images.get(i).getOriginalFilename());
+					
+					// 수정된 이미지 파일 정보를 저장할 Attachment 객체 생성
+					at = new Attachment(upBoard.getBoardNo(), images.get(i).getOriginalFilename(), changeFileName, filePath, i);
+						
+					// 기존 이미지가 존재하는 경우 -> update
+					// 기존 이미지가 존재하지 않는 경우 -> insert
+					
+					boolean flag = false; // 기존 이미지가 존재하는 경우 true, 아니면 false;
+					for(Attachment old : oldFiles) { // 이전 파일 목록에 반복 접근
+						if(old.getFileLevel() == i) {
+							// 현재 접근한 이전 파일의 레벨이
+							// 새롭게 업로드된(수정된) 파일의 레벨과 같을 경우
+							// == 이전 파일이 새로운 파일로 수정이 된 경우
+							
+							flag = true;
+							removeFiles.add(old); // 서버 파일 제거 List에 수정 예정인 이전 파일 정보를 저장
+							
+							at.setFileNo(old.getFileNo());
+							// DB에 있는 이전 파일의 번호를 얻어와 
+							// DB상에서 데이터 수정할 수 있게
+							// 새로운 파일에 번호 세팅
+							break;
+						}
+					}
+					
+					
+					if(flag) {
+						// update
+						result = boardDAO.updateAttachment(at);
+						
+					}else {
+						// insert
+						result = boardDAO.insertAttachment(at);
+					}
+					
+					
+				}else { // if end 
+					// 업로드(수정)된 이미지가 없을 경우
+					
+					if(deleteImages[i]) { // 삭제 버튼이 눌러진 인덱스인 경우
+						for(Attachment old : oldFiles) {
+							// 이전 이미지 파일 목록에 반복 접근하여
+							// 삭제 버튼이 눌러진 인덱스(== 파일레벨)와
+							// 이전 이미지 중 같은 파일레벨을 가지고 있는 DB 정보를 삭제
+							if(old.getFileLevel() == i) {
+								result = boardDAO.deleteAttachment2(old.getFileNo());
+								
+								// 서버측 파일 삭제  목록에 해당 파일 정보를 추가
+								removeFiles.add(old);
+							}
+						}
+					}
+				}
+				
+				files.add(at);
+		
+			} // for end
+			
+			// 수정된 이미지를 서버에 저장
+			if(result > 0) {
+				for(int i=0; i<images.size(); i++) {
+					if(!images.get(i).getOriginalFilename().equals("")) {
+						try {
+							// transferTo() : 지정된 경로에 업로드 된 파일정보를 실제 파일로 변환하는 메소드
+							images.get(i).transferTo(new File(savePath + "/" + files.get(i).getFileChangeName()));
+						}catch(Exception e) {
+							// 서버에 파일 저장 중 오류 발생 시
+							// -> DB에 있는 파일 정보도 삭제
+							boardDAO.deleteAttachment(upBoard.getBoardNo());
+						}
+					}
+				}
+			}
+			
+			// 제거 목록에 있는 파일 삭제
+			for(Attachment removeFile : removeFiles) {
+				File rm = new File(savePath + "/" + removeFile.getFileChangeName());
+				rm.delete(); // 파일 삭제
+			}
+		}
 		
 		return result;
 	}
@@ -164,6 +265,12 @@ public class BoardServiceImpl implements BoardService{
 		return boardDAO.selectFiles(boardNo);
 	}
 	
+	
+	@Override
+	public List<Attachment> selectThumbnailList(List<Board> boardList) {
+		
+		return boardDAO.selectThumbnailList(boardList);
+	}
 	
 	
 	
@@ -201,6 +308,7 @@ public class BoardServiceImpl implements BoardService{
 
         return date + "" + str + ext;
     }
+
 
 
 
