@@ -272,8 +272,12 @@ public class BoardServiceImpl implements BoardService{
 		return boardDAO.selectThumbnailList(boardList);
 	}
 	
-	
-	
+	// 게시판 조회수 높은 게시글 조회 Service 구현
+	@Override
+	public List<Board> selectTopViews(int type) {
+
+		return boardDAO.selectTopViews(type);
+	}
 	
 	
 	
@@ -308,6 +312,9 @@ public class BoardServiceImpl implements BoardService{
 
         return date + "" + str + ext;
     }
+
+
+
 
 
 

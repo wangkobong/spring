@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.kh.spring.board.model.service.BoardService;
 import com.kh.spring.board.model.vo.Attachment;
 import com.kh.spring.board.model.vo.Board;
@@ -291,7 +294,17 @@ public class BoardController {
 		return mv;
 	}
 	
-	
+	// 게시판 조회수 높은 게시글 조회
+	@ResponseBody
+	@RequestMapping("topViews/{type}")
+	public String topViews(@PathVariable int type) {
+		List<Board> list = boardService.selectTopViews(type); 
+		
+		// Gson
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM--dd").create();
+		
+		return gson.toJson(list);
+	}
 	
 	
 }

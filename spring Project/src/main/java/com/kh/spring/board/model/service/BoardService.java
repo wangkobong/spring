@@ -67,6 +67,12 @@ public interface BoardService {
 	 * @return thList
 	 */
 	List<Attachment> selectThumbnailList(List<Board> boardList);
+
+	/**  게시판 조회수 높은 게시글 조회 Service
+	 * @param type
+	 * @return list
+	 */
+	List<Board> selectTopViews(int type);
 	
 	
 }

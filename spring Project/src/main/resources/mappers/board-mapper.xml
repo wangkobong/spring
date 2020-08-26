@@ -147,4 +147,20 @@
 		WHERE FILE_NO = #{fileNo}	
 	</delete>
 	
+	<!-- 최근 5일 게시판 조회수 높은 게시글 조회 -->
+	<!-- <![CDATA[ 부등호 보함 SQL 구문 ]] 
+		xml 파일에서 태그 기호(<, >) 를 태그가 아닌 문자 그대로 인식 시키는 구문
+	-->
+	<select id="selectTopViews" parameterType="_int" resultMap="boardResultSet">
+	SELECT * FROM
+		(SELECT * FROM V_BOARD
+		WHERE BOARD_TYPE=1
+		AND BOARD_CREATE_DT BETWEEN 
+		TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'))-5
+		AND SYSDATE
+		ORDER BY READ_COUNT DESC)
+		<![CDATA[
+		WHERE ROWNUM <= 5 ]]>
+	</select>
+	
 </mapper>

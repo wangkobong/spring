@@ -53,7 +53,7 @@ public class AroundAdviceAspect {
 		
 		
 		// proceed() 메소드 호출
-		Object obj = pp.proceed();
+		Object obj = pp.proceed(); //pp.proceed() 호출시 target method의 반환값이 전달됨.
 		
 		long endMs = System.currentTimeMillis();
 		
@@ -67,8 +67,13 @@ public class AroundAdviceAspect {
 			
 		}
 		
+		// Around Advice의 반환값은 
+		// Target method의 결과값으로 대체가 됨.
 		
-		return obj;
+		return obj; // obj 가공없이 리턴 == 기존 target method 결과를 그대로 반환함.
+		
+		// Around Advice는 반환형이 void인 경우 자동으로 null값을 반환하게 함.
+		
 	}
 
 	

@@ -143,4 +143,10 @@ public class BoardDAO {
 		return sqlSession.delete("boardMapper.deleteAttachment2", fileNo);
 	}
 
+	// 게시판 조회수 높은 게시글 조회 DAO 
+	public List<Board> selectTopViews(int type) {
+
+		return sqlSession.selectList("boardMapper.selectTopViews", type);
+	}
+
 }
