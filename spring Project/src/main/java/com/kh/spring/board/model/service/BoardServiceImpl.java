@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import com.kh.spring.board.model.dao.BoardDAO;
 import com.kh.spring.board.model.vo.Attachment;
 import com.kh.spring.board.model.vo.Board;
 import com.kh.spring.board.model.vo.PageInfo;
+import com.kh.spring.board.model.vo.Search;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -313,10 +316,35 @@ public class BoardServiceImpl implements BoardService{
         return date + "" + str + ext;
     }
 
+    // 검색 조건이 추가된 페이징 처리 Service 구현
+	@Override
+	public PageInfo pagination(int type, int cp, Search search) {
+			
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("search", search);
+		map.put("type", type);
+		
+		// 1) 검색 조건에 맞는 전체 게시글 수 조회
+		int searchListCount = boardDAO.getSearchListCount(map);
+		
+		// 2) setPageInfo
+		pInfo.setPageInfo(cp, searchListCount, type);
+		
+		return pInfo;
+		
+		
+	}
 
-
-
-
+	// 검색 목록 조회 Service 구현
+	@Override
+	public List<Board> selectSearchList(PageInfo pInfo, Search search) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("search", search);
+		map.put("type", pInfo.getBoardType());
+		
+		return boardDAO.selectSearchList(pInfo, map);
+	}
 
 
 

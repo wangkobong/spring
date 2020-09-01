@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-@Component // 일정 또는 지정 시간마다 스프링 컨테이너가 코드를 제어할 수 있게 bean 등록
+//@Component // 일정 또는 지정 시간마다 스프링 컨테이너가 코드를 제어할 수 있게 bean 등록
 public class SchedulingTest {
 	
 	// @Scheduled
@@ -40,9 +40,9 @@ public class SchedulingTest {
 	
 	//@Scheduled(fixedDelay = 10000) // 이전 동작 완료 후 10초 뒤에 다시 수행
 					// cron="초 분 시 일 월 요일 [년도]"
-	@Scheduled(cron = "0 * * * * * ") // 매 분이 시작될 때 마다
-	public void test() {
-		logger.debug("---------------------- 스케쥴링 테스트  ----------------------");
-	}
+	//@Scheduled(cron = "0 * * * * * ") // 매 분이 시작될 때 마다
+//	public void test() {
+//		logger.debug("---------------------- 스케쥴링 테스트  ----------------------");
+//	}
 	
 }

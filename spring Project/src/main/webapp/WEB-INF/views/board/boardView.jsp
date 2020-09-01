@@ -113,10 +113,11 @@
 				
 				<div>
 					<div class="float-right">
-						<a class="btn btn-primary" 
+						<a class="btn btn-primary" href="${listUrl}">목록으로</a>
+<%-- 						<a class="btn btn-primary" 
 							href="<c:url value="../list/${board.boardType}">
 									<c:param name="cp" value="${param.cp}"/>						
-								  </c:url>">목록으로</a>
+								  </c:url>">목록으로</a> --%>
 							
 							<!-- 상세조회 주소 예시 : /1/500?cp=1  -->
 							<!-- 목록으로 주소 예시 : board/list/1?cp=1  -->

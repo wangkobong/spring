@@ -24,6 +24,7 @@ import com.kh.spring.board.model.service.BoardService;
 import com.kh.spring.board.model.vo.Attachment;
 import com.kh.spring.board.model.vo.Board;
 import com.kh.spring.board.model.vo.PageInfo;
+import com.kh.spring.board.model.vo.Search;
 import com.kh.spring.member.model.vo.Member;
 
 @SessionAttributes({"loginMember"})
@@ -306,7 +307,36 @@ public class BoardController {
 		return gson.toJson(list);
 	}
 	
-	
+	// 게시글 검색
+	@RequestMapping("search/{type}")
+	public String search(@PathVariable int type,
+			@RequestParam(value="cp", required=false, defaultValue = "1") int cp,
+			Search search, Model model	) {
+		
+		System.out.println(type);
+		System.out.println(search);
+		
+		// 1. 검색 내용이 포함된 게시글 수 조회
+		PageInfo pInfo = boardService.pagination(type, cp, search);
+		
+		System.out.println(pInfo);
+		// 2. 검색 게시글 목록 조회
+		List<Board> boardList = boardService.selectSearchList(pInfo, search);
+		for(Board b : boardList) {
+			System.out.println(b);
+		}
+		
+		// 3. 썸네일 목록 조회
+		if(boardList.isEmpty()) {
+			List<Attachment> thList = boardService.selectThumbnailList(boardList);
+			model.addAttribute("thList", thList);
+		}
+		
+		model.addAttribute("boardList", boardList);
+		model.addAttribute("pInfo", pInfo);
+		
+		return "board/boardList";
+	}
 }
 
 

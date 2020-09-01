@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.spring.board.model.vo.Attachment;
 import com.kh.spring.board.model.vo.Board;
 import com.kh.spring.board.model.vo.PageInfo;
+import com.kh.spring.board.model.vo.Search;
 
 
 public interface BoardService {
@@ -73,6 +74,21 @@ public interface BoardService {
 	 * @return list
 	 */
 	List<Board> selectTopViews(int type);
+
+	/** 검색 조건이 추가된 페이징 처리 Service
+	 * @param type
+	 * @param cp
+	 * @param search
+	 * @return pInfo
+	 */
+	PageInfo pagination(int type, int cp, Search search);
+
+	/** 검색 목록 조회 Service
+	 * @param pInfo
+	 * @param search
+	 * @return boardList
+	 */
+	List<Board> selectSearchList(PageInfo pInfo, Search search);
 	
 	
 }

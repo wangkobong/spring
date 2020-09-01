@@ -111,13 +111,47 @@
       	</c:if>
       	<!--------------------------------- 페이징바  ---------------------------------->
 	      
+	    <%----------------- 검색 파라미터가 포함된 url 생성 -----------------%> 
+	    <c:url var="searchParameter" value="${pInfo.boardType}">
+	    	<c:if test="${!empty paramValues.ct }">
+	    		<c:forEach var="ctName" items="${paramValues.ct}">
+	    			<c:param name="ct" value="${ctName}"/>
+	    		</c:forEach>
+	    	</c:if>
+	    	
+	    	<c:if test="${!empty param.sVal}">
+	    		<c:param name="sKey" value="${param.sKey}"/>
+	    		<c:param name="sVal" value="${param.sVal}"/>
+	    	</c:if>
+	    </c:url>
+	    
+	    <%----------------- 검색 파라미터가 있을 경우 / 없을 경우 url 가공 -----------------%> 
+	    <%-- + 상세조회 목록으로 버튼 주소 가공  --%>
+	   
+	    
+	    <!-- 검색 파라미터가 있을 경우 : search/1?ct=운동&ct=영화&sKey=tit&sVal=test&cp=2
+	    검색 파라미터가 없는 경우 : list/1?cp=2 -->
+	    <c:choose>
+	   		<%-- 검색 조건이 존재하는 경우(파라미터 cp가 쿼리스트링 제일 마지막에 추가될 수 있도록 '&'기호 추가 --%>
+	    	<c:when test="${!empty paramValues.ct || !empty param.sVal}">
+	    		<c:set var="url" value="${searchParameter}&cp="/>
+	    		<c:set var="listUrl" value="../search/${url}${pInfo.currentPage}" scope="session"/>
+	    	</c:when>
+	    	
+	    	<%-- 검색 조건이 존재하는 경우(파라미터 cp가 쿼리스트링 제일 앞에 추가될 수 있도록 '?'기호 추가 --%>
+	    	<c:otherwise>
+	    		<c:set var="url" value="${searchParameter}?cp="/>
+	    		<c:set var="listUrl" value="../list/${url}${pInfo.currentPage}" scope="session"/>
+	    	</c:otherwise>
+	    </c:choose>
 		<div class="my-4">
             <ul class="pagination">
             	<c:if test="${pInfo.currentPage > pInfo.pagingBarSize}">	
             					<%-- 11 페이지부터 노출을 시켜라 --%>
 	                <li>
 	                	<!-- 맨 처음으로(<<) -->
-	                    <a class="page-link text-primary" href="${pInfo.boardType}?cp=1">&lt;&lt;</a>
+<%-- 	                    <a class="page-link text-primary" href="${pInfo.boardType}?cp=1">&lt;&lt;</a> --%>
+	                    <a class="page-link text-primary" href="${url}1">&lt;&lt;</a>
 	                </li>
 	                
 	                <li>
@@ -126,10 +160,9 @@
 	                	<!--  fmt태그를 이용한 소수점 제거 -->
 	                	<fmt:parseNumber var="operand1" value="${(pInfo.currentPage-1) / pInfo.pagingBarSize}" integerOnly="true"/>
 	                	<c:set var="prev" value="${operand1 * 10}"/>
-	                	
-	                		
-	                	
-                   		<a class="page-link text-primary" href="${pInfo.boardType}?cp=${prev}">&lt;</a>
+  	
+                   		<%-- <a class="page-link text-primary" href="${pInfo.boardType}?cp=${prev}">&lt;</a> --%>
+                   		<a class="page-link text-primary" href="${url}${prev}">&lt;</a>
 	                </li>
                 </c:if>
                 
@@ -142,7 +175,8 @@
                 		</c:when>
                 		<c:otherwise>             		
 	                		<li>
-	                			<a class="page-link text-primary" href="${pInfo.boardType}?cp=${p}">${p}</a>
+	                			<%-- <a class="page-link text-primary" href="${pInfo.boardType}?cp=${p}">${p}</a> --%>
+	                			<a class="page-link text-primary" href="${url}${p}">${p}</a>
 		                	</li>
                 		</c:otherwise>
 		            </c:choose>  	
@@ -157,52 +191,51 @@
 	                <li>
 						<fmt:parseNumber var="operand2" value="${(pInfo.currentPage + 9) / pInfo.pagingBarSize}" integerOnly="true"/>
 	                	<c:set var="next" value="${operand2 * pInfo.pagingBarSize + 1}"/>
-						<a class="page-link text-primary" href="${pInfo.boardType}?cp=${next}">&gt;</a>
+						<%-- <a class="page-link text-primary" href="${pInfo.boardType}?cp=${next}">&gt;</a> --%>
+						<a class="page-link text-primary" href="${url}${next}">&gt;</a>
 	               
 	                </li>
 	                
 	                <!-- 맨 끝으로(>>) -->
 	                <li>
-	                    <a class="page-link text-primary" href="${pInfo.boardType}?cp=${pInfo.maxPage}">&gt;&gt;</a>
+	                   <%--  <a class="page-link text-primary" href="${pInfo.boardType}?cp=${pInfo.maxPage}">&gt;&gt;</a> --%>
+	                    <a class="page-link text-primary" href="${url}${pInfo.maxPage}">&gt;&gt;</a>
 	                </li>
                 </c:if>
             </ul>
         </div>	     
 
         <div>
-            <form action="list" method="GET" class="text-center" id="searchForm" style="margin-bottom:100px;">
-            	<span>
-            		카테고리(다중 선택 가능)<br>
-	                <label for="exercise">운동</label> 
-	                <input type="checkbox" name="searchCategory" value="운동" id="exercise">
-	                &nbsp;
-	                <label for="movie">영화</label> 
-	                <input type="checkbox" name="searchCategory" value="영화" id="movie">
-	                &nbsp;
-	                <label for="music">음악</label> 
-	                <input type="checkbox" name="searchCategory" value="음악" id="music">
-	                &nbsp;
-	                <label for="cooking">요리</label> 
-	                <input type="checkbox" name="searchCategory" value="요리" id="cooking">
-	                &nbsp;
-	                <label for="game">게임</label> 
-	                <input type="checkbox" name="searchCategory" value="게임" id="game">
-	                &nbsp;
-	                <label for="etc">기타</label> 
-	                <input type="checkbox" name="searchCategory" value="기타" id="etc">
-	                &nbsp;
+            <div  class="text-center" id="searchForm" style="margin-bottom:100px;">
+                <span>카테고리(다중 선택 가능)<br>
+                    <label for="exercise">운동</label> 
+                    <input type="checkbox" name="ct" value="운동" id="exercise">
+                    &nbsp;
+                    <label for="movie">영화</label> 
+                    <input type="checkbox" name="ct" value="영화" id="movie">
+                    &nbsp;
+                    <label for="music">음악</label> 
+                    <input type="checkbox" name="ct" value="음악" id="music">
+                    &nbsp;
+                    <label for="cooking">요리</label> 
+                    <input type="checkbox" name="ct" value="요리" id="cooking">
+                    &nbsp;
+                    <label for="game">게임</label> 
+                    <input type="checkbox" name="ct" value="게임" id="game">
+                    &nbsp;
+                    <label for="etc">기타</label> 
+                    <input type="checkbox" name="ct" value="기타" id="etc">
+                    &nbsp;
                 </span>
                 <br>
-                <select name="searchKey" class="form-control" style="width:100px; display: inline-block;">
-                    <option value="title">글제목</option>
-                    <option value="content">내용</option>
-                    <option value="titcont">제목+내용</option>
+                <select name="sKey" class="form-control" style="width:100px; display: inline-block;">
+                    <option value="tit">글제목</option>
+                    <option value="con">내용</option>
+                    <option value="tit-con">제목+내용</option>
                 </select>
-                <input type="text" name="searchValue" class="form-control" style="width:25%; display: inline-block;">
-                <button class="form-control btn btn-primary" style="width:100px; display: inline-block;">검색</button>
-            </form>
-            
-            
+                <input type="text" name="sVal" class="form-control" style="width:25%; display: inline-block;">
+                <button class="form-control btn btn-primary" id="searchBtn" type="button" style="width:100px; display: inline-block;">검색</button>
+            </div>
         </div>
    	
 	</div>
@@ -229,6 +262,119 @@
 				location.href = boardUrl;
 			});
 		});
+		
+		// ---------------------------- 검색 버튼 동작  ----------------------------
+		$("#searchBtn").on("click", function(){
+			// 검색 값에 따라 url을 조합하여 저정할 변수
+			var searchUrl = "";
+			
+			// 검색에 필요한 요소(카테고리, 검색 조건, 검색어) 읽어오기
+			var $ct = $("input[name='ct']:checked");
+			var $sKey = $("select[name='sKey']");
+			var $sVal = $("input[name='sVal']");
+			
+			
+			// 1) 검색에 필요한 카테고리 또는 검색어가 입력 되었는지 확인
+			// - 입력이 되지 않은 경우 -> 해당 게시판 첫 페이지로 돌아가는 url 생성
+			// - 하나라도 입력된 경우 -> 검색 url 생성(쿼리스트링 조합 작업 필요)
+			
+			$ct.each(function(index, item){
+				console.log($(item).val());
+				
+			});
+				
+			console.log($sKey.val());
+			console.log($sVal.val());
+			
+			// 선택된 카테고리의 개수가 0이고, 입력된 검색어의 길이가 0인경ㅇ
+			// == 카테고리 체크 X, 검색어 입력 X 상태로 검색버튼을 클릭 한 경우
+			// -> 해당 게시판의 첫 페이지로 이동
+			if($ct.length == 0 && $sVal.val().trim().length == 0){
+				searchUrl = "${pInfo.boardType}";
+			}
+			
+				// 카테고리가 체크 되었거나, 검색어가 입력 된 경유 또는 둘 다
+				else{
+					// http://localhost:8080/spring/board/list/1
+					searchUrl = "../search/${pInfo.boardType}?"; // 검색 요청 url	
+					
+					// 카테고리가 체크된 경우
+					if($ct.length != 0){
+						// $ct 배열에 반복 접근 하여 쿼리스트링에 추가
+						$ct.each(function(index, item){
+							// ct=운동&ct=영화&ct=음악&ct=기타
+							if(index != 0) searchUrl += "&";
+							searchUrl += "ct=" + $(item).val();
+						});
+						
+						
+						// 카테고리 반복 접근이 끝난 후 
+						//검색어가 있을 경우 쿼리스트링을 이어서 작성할 수 있도록 '&' 기호 추가
+						if($sVal.val().trim().length != 0) searchUrl += "&";
+					}
+					// 검색어가 입력된 경우
+					if($sVal.val().trim().length != 0){
+						searchUrl += "sKey=" + $sKey.val() + "&sVal=" + $sVal.val();
+					}
+				
+			
+				}
+			
+			
+			// 2) location.href를 통해 검색 요청 전달
+			// http://localhost:8080/spring/board/list/1
+			location.href = searchUrl; // ${pInfo.boardType} == 1
+		});
+		
+		// ---------------------------- 검색 값 유지  ----------------------------	
+	   	$(function(){
+	   		var sKey = "${param.sKey}";
+	   		var sVal = "${param.sVal}";
+	   		
+	   		// EL 구문에서 값이 없을 경우 ""(빈문자열)이 반환 됨
+	   		
+	   		if(sKey != "" && sVal != ""){
+	   			// 검색어 세팅
+	   			$("input[name='sVal']").val(sVal);
+	   			
+	   			// 검색 조건 세팅
+	   			$("select[name='sKey'] > option").each(function(index, item){
+	   				if($(item).val() == sKey){
+	   					$(item).prop("selected", true);
+	   				}
+	   				
+	   			});
+	   		}
+	   		
+	   		// 카테고리(체크박스) 값 세팅
+	   		// script 태그 내에 EL/JSTL 사용하기
+	   		
+	   		// HTML, JS/jQuery, Scriptlet(Java), EL/JSTL
+	   		// 서버 동작 시 JSP 파일 코드 해석 순서
+	   		// 1) Java 2) EL/JSTL , 3) HTML 4) JS/jQuery
+	   		
+	   		var sKey = "${param.sKey}";
+	   		
+	   		// EL/JSTL 구문은 JS/jQuery보다 해석이 빠르므로
+	   		// JS구문 내에 EL/JSTL 구문을 작성하여 혼용할 수 있다.
+	   		<c:forEach var="ctName" items="${paramValues.ct}">
+	   			$("input[name='ct']").each(function(index, item){
+	   				if($(item).val() == "${ctName}"){
+	   					$(item).prop("checked", true);
+	   				}
+	   			});
+	   		</c:forEach>
+	   		
+	   	});	
+	   		
+	   	
+	 // ---------------------------- 검색창 엔터 이벤트  ----------------------------	
+	 $("input[name='sVal']").on("keyup", function(event){
+		 //console.log(event.keyCode); // 키업 이벤트가 발생할 경우 입력한 키 값이 출력됨.
+		 if(event.keyCode == 13){
+			 $("#searchBtn").click(); // 검색 버튼 클릭
+		 }
+	 });
 	</script>
 	
 	
